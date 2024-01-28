@@ -1,12 +1,25 @@
 {
-  "name": "hyper-backend",
+  "name": "hyper-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.mjs"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RishikeshPolasa/Hyper-api.git"
+  },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RishikeshPolasa/Hyper-api/issues"
+  },
+  "homepage": "https://github.com/RishikeshPolasa/Hyper-api#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.3"
+  }
 }
