@@ -1,34 +1,44 @@
-// import { getUser } from "../services/user/userService.mjs";
-import { signJWT, verifyJWT } from "../utils/jwt.utils.mjs";
+import { regtisterUser, loginUser } from "../services/user/userService.mjs";
 
-export const userSignHandler = (req, res) => {
+export const userSignUpHandler = async (req, res) => {
   try {
-    console.log("body");
-    const { email } = req.body;
-    //     const user = getUser(email, password);
+    const { email, password, userName } = req.body;
 
-    //     if (!user) {
-    //       res.status(401).send("user not found");
-    //     }
-    //create access token
-    res.status(201).send({
-      email: email,
-      // Other data as needed
-    });
-    //     res.send("login");
+    if (!email || !password || !userName) {
+      return res
+        .status(400)
+        .json({ message: "Email,userName and password are required" });
+    }
+    await regtisterUser({ email, password, userName });
+    res.status(201).json({ message: "Successfully registered" });
   } catch (error) {
     console.error(error);
+    if (error.statusCode) {
+      res.status(error.statusCode).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 };
 
-export const sessionHandler = (req, res) => {
-  return res.send(req.user);
-};
+export const userLoginHandler = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-export const deleteSessionHandler = (req, res) => {
-  res.cookie("accessToken", "", {
-    maxAge: 0,
-    httpOnly: true,
-  });
-  return res.send({ success: true });
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
+    }
+
+    const user = await loginUser({ email, password });
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    if (error.statusCode) {
+      res.status(error.statusCode).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
 };

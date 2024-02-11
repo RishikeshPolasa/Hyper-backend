@@ -1,20 +1,13 @@
 import express from "express";
 import {
-  userSignHandler,
-  sessionHandler,
-  deleteSessionHandler,
+  userSignUpHandler,
+  userLoginHandler,
 } from "../handlers/userHandler.mjs";
 
 const userRouter = express.Router();
 
-userRouter.get("/login", (req, res) => {
-  res.send("Hello login");
-});
+userRouter.get("/login", userLoginHandler);
 
-userRouter.post("/signup", userSignHandler);
-
-userRouter.get("/session", sessionHandler);
-
-userRouter.delete("/delete", deleteSessionHandler);
+userRouter.post("/register", userSignUpHandler);
 
 export { userRouter };
