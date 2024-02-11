@@ -1,38 +1,37 @@
-// require("dotenv").config();
-// import query from "../utilities/sqlConnection";
-// const bcrypt = require("bcryptjs");
-// import { v4 as uuidv4 } from "uuid";
-// import { AuthorizationError, ForbiddenError } from "../utilities/Error";
-// import { comparePassword, generateToken } from "../middleware";
-// const signupService = async (email_id, password, name) => {
-//   const encryptedPassword = await bcrypt.hash(password, 10);
-//   const user = {
-//     id: uuidv4(),
-//     name,
-//     email_id,
-//     password: encryptedPassword,
-//     type: "buyer",
-//   };
-//   const token = generateToken(user);
-//   await query(
-//     "insert into users (id,name,email_id,password,user_type) values (?,?,?,?,?)",
-//     [user.id, user.name, user.email_id, user.password, user.type]
-//   );
-//   return {
-//     user: user.name,
-//     email: user.email_id,
-//     token: token,
-//   };
-// };
-// const ValidUser = async (emailId, password) => {
-//   const user = await query("select * from users where email_id = ?", [emailId]);
-//   if (!user[0]) {
-//     throw new AuthorizationError("No user exists!", 401);
-//   }
-//   let isValidPassword = await comparePassword(password, user[0].password);
-//   if (!isValidPassword) {
-//     throw new ForbiddenError("Password does not match", 403);
-//   }
-//   return user;
-// };
-// export { signupService, ValidUser };
+import bcrypt from "bcryptjs";
+import { User } from "../../Models/userModels.mjs";
+import { generateToken } from "../../middleware.mjs";
+
+export const regtisterUser = async ({ email, password, userName }) => {
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw { statusCode: 400, message: "Email already exists" };
+  }
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new User({
+    email,
+    password: hashedPassword,
+    userName,
+  });
+  console.log("user", newUser);
+  await newUser.save();
+};
+
+export const loginUser = async ({ email, password }) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw { statusCode: 401, message: "Invalid email" };
+  }
+
+  const isPasswordMatch = await bcrypt.compare(password, user.password);
+  if (!isPasswordMatch) {
+    throw { statusCode: 401, message: "Invalid password" };
+  }
+  const token = generateToken(user);
+  return {
+    data: {
+      res: { userName: user.userName, email: user.email, token: token },
+      statusCode: 200,
+    },
+  };
+};

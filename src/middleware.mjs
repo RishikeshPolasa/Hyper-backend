@@ -1,7 +1,9 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const config = process.env;
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 const secretKey = process.env.SECRET_KEY;
+const expiresIn = "1d";
 // async function verifyToken(req,res,next) {
 //   try {
 //     if (!ctx.header.token) {
@@ -18,12 +20,11 @@ const secretKey = process.env.SECRET_KEY;
 // }
 
 const generateToken = (user) => {
-  return {
-    token: jwt.sign(
-      { userName: user.name, userEmail: user.email_id, userId: user.id },
-      secretKey
-    ),
-  };
+  return jwt.sign(
+    { userName: user.userName, userEmail: user.email, userId: user._id },
+    secretKey,
+    { expiresIn: expiresIn }
+  );
 };
 const comparePassword = async (password, hash) => {
   try {
@@ -33,4 +34,4 @@ const comparePassword = async (password, hash) => {
   }
 };
 
-export {  generateToken, comparePassword };
+export { generateToken, comparePassword };
