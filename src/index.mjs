@@ -1,4 +1,4 @@
-import createServer from "./src/utils/server.mjs";
+import createServer from "./utils/server.mjs";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 const app = createServer();
