@@ -13,7 +13,6 @@ export const regtisterUser = async ({ email, password, userName }) => {
     password: hashedPassword,
     userName,
   });
-  console.log("user", newUser);
   await newUser.save();
 };
 

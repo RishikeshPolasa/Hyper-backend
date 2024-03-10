@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const secretKey = process.env.SECRET_KEY;
-const expiresIn = "1d";
+const expiresIn = "1h";
 // async function verifyToken(req,res,next) {
 //   try {
 //     if (!ctx.header.token) {
